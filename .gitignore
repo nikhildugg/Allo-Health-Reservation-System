@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# Accidental local copies created outside the app root
+/allo-reservation-system/
+/Usersnikhiallo-reservation-system/
