@@ -3,8 +3,15 @@ import { reserveProduct } from '@/lib/actions/reservations'
 import { redirect } from 'next/navigation'
 import { Package, Warehouse, ShoppingCart } from 'lucide-react'
 
-export default async function ReservePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ReservePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ error?: string }>
+}) {
   const { id } = await params
+  const { error } = await searchParams
   const products = await getProducts()
   const product = products.find(p => p.id === id)
   const warehouses = await getWarehouses()
@@ -26,6 +33,12 @@ export default async function ReservePage({ params }: { params: Promise<{ id: st
 
           <p className="text-gray-600 mb-8">{product.description}</p>
 
+          {error ? (
+            <p className="mb-6 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </p>
+          ) : null}
+
           <form action={async (formData: FormData) => {
             'use server'
             const productId = id
@@ -33,7 +46,7 @@ export default async function ReservePage({ params }: { params: Promise<{ id: st
             const quantity = parseInt(formData.get('quantity') as string)
 
             if (!warehouseId || isNaN(quantity)) {
-              throw new Error('Please provide valid warehouse and quantity')
+              redirect(`/reserve/${id}?error=${encodeURIComponent('Please provide valid warehouse and quantity')}`)
             }
 
             const result = await reserveProduct({ productId, warehouseId, quantity })
@@ -42,7 +55,7 @@ export default async function ReservePage({ params }: { params: Promise<{ id: st
               redirect(`/reservation/${result.reservationId}`)
             }
 
-            throw new Error(result.error)
+            redirect(`/reserve/${id}?error=${encodeURIComponent(result.error)}`)
           }} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
