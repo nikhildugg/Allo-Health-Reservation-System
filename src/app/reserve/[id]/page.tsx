@@ -20,6 +20,10 @@ export default async function ReservePage({
     return <div className="p-8 text-center">Product not found</div>
   }
 
+  const warehouseStock = new Map(
+    product.inventory.map((inventory) => [inventory.warehouseId, inventory.quantity])
+  )
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
@@ -59,26 +63,31 @@ export default async function ReservePage({
           }} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Warehouse
+                Warehouse <span className="font-normal text-gray-500">(available stock shown below)</span>
               </label>
               <div className="relative">
                 <Warehouse className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                 <select
                   name="warehouseId"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white text-gray-900"
                   required
                 >
                   <option value="">Select a warehouse</option>
-                  {warehouses.map(w => (
-                    <option key={w.id} value={w.id}>{w.name} - {w.location}</option>
-                  ))}
+                  {warehouses.map((warehouse) => {
+                    const stock = warehouseStock.get(warehouse.id) ?? 0
+                    return (
+                      <option key={warehouse.id} value={warehouse.id} disabled={stock === 0}>
+                        {warehouse.name} - {warehouse.location} ({stock} available)
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quantity
+                Quantity <span className="font-normal text-gray-500">(must not exceed available stock)</span>
               </label>
               <div className="relative">
                 <ShoppingCart className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
@@ -86,8 +95,8 @@ export default async function ReservePage({
                   type="number"
                   name="quantity"
                   min="1"
-                  placeholder="1"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  defaultValue="1"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder:text-gray-400"
                   required
                 />
               </div>
