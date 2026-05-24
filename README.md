@@ -2,6 +2,10 @@
 
 A Next.js application implementing a high-concurrency reservation system for medical products across multiple warehouses.
 
+## Live Demo
+- Application: https://allo-health-reservation-system-5bc1nlv3h.vercel.app/
+- Repository: https://github.com/nikhildugg/Allo-Health-Reservation-System
+
 ## Features
 - **Race Condition Prevention**: Uses pessimistic locking (`SELECT ... FOR UPDATE`) in Postgres to ensure that stock is accurately decremented and no overselling occurs under high concurrency.
 - **Data Model**: Supports multiple products and warehouses with a junction table for inventory management.
