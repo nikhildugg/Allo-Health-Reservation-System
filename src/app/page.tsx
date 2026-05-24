@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { getProducts } from '@/lib/actions/products'
 import { Package } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const products = await getProducts()
 
