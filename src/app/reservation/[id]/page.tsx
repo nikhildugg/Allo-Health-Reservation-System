@@ -3,8 +3,8 @@ import CountdownTimer from '@/components/CountdownTimer'
 import { CheckCircle2, Clock, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
-export default async function ReservationPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function ReservationPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const reservation = await getReservation(id)
 
   if (!reservation) {

@@ -3,8 +3,8 @@ import { reserveProduct } from '@/lib/actions/reservations'
 import { redirect } from 'next/navigation'
 import { Package, Warehouse, ShoppingCart } from 'lucide-react'
 
-export default async function ReservePage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function ReservePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const products = await getProducts()
   const product = products.find(p => p.id === id)
   const warehouses = await getWarehouses()
